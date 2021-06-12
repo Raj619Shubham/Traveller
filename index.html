@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <title>Traveller</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #loading {
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      background: #000 url('https://flevix.com/wp-content/uploads/2020/01/Preloader.gif') no-repeat center;
+      z-index: 999999;
+    }
+
+    @keyframes bgChanger {
+      0% {
+        background-image: url("train-1728537_1920.jpg");
+      }
+
+      20% {
+        background-image: url("railway-2439189_1920.jpg");
+      }
+
+      40% {
+        background-image: url("train-60539_1920.jpg");
+      }
+
+      60% {
+        background-image: url("train-1728537_1920.jpg");
+      }
+
+      80% {
+        background-image: url("railway-2439189_1920.jpg");
+      }
+
+      100% {
+        background-image: url("train-60539_1920.jpg");
+      }
+    }
+
+    body {
+      background-color: #000;
+      background-image: url("railway-2439189_1920.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      animation-name: bgChanger;
+      animation-duration: 55s;
+      animation-iteration-count: infinite;
+      animation-direction: normal;
+      animation-timing-function: cubic-bezier();
+    }
+
+    #jumboIn {
+      background-color: rgba(255, 253, 255, 0.8);
+      border-radius: 15px;
+      max-width: 800px;
+    }
+
+    .jumboIn>h1,
+    .jumboIn>h3 {
+      display: inline;
+      margin: 3px;
+
+    }
+
+    .jumboIn>h1 {
+      font-size: 4rem;
+    }
+
+    .jumboIn>h3 {
+      font-size: 2rem;
+    }
+
+    .card {
+      border-radius: 10px;
+      padding-bottom: 15px;
+    }
+     
+    @media screen and (max-width:900px) {
+      #jumboIn{
+        max-width: 80%;
+      }
+    }
+
+    @media screen and (max-width:600px) {
+    
+      .jumboIn>h1 {
+        font-size: 35px;
+      }
+
+      .jumboIn>h3 {
+        font-size: 22px;
+      }
+
+      .table-striped {
+        font-size: 14px;
+      }
+
+      #routeTable {
+        font-size: 12.5px;
+      }
+    }
+  </style>
+</head>
+
+<body onload="loader()">
+  <div id="loading"></div>
+
+  <nav class="navbar navbar-light px-3 py-1" style="background-color: rgba(92, 88, 88, 0.5);font-weight: 700;">
+
+    <!-- Navbar brand -->
+    <a class="navbar-brand text-white" href="index.html" style=" font-size: 26px;">Travellers</a>
+
+    <!-- Collapse button -->
+    <button class="navbar-toggler toggler-example text-white" type="button" data-toggle="collapse"
+      data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false"
+      aria-label="Toggle navigation"><span class="dark-blue-text"><i class="fas fa-bars fa-1x"></i></span></button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+
+      <!-- Links -->
+      <ul class="navbar-nav" style="font-size: 20px;">
+        <li class="nav-item active mx-auto my-1">
+          <a class="nav-link text-white" href="#Train_status">Live Train Status <span
+              class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item mx-auto my-1">
+          <a class="nav-link text-white" href="#Station_status">Live Station Status</a>
+        </li>
+        <li class="nav-item mx-auto my-1">
+          <a class="nav-link text-white" href="#PNR_status">All Trains on Station</a>
+        </li>
+        <li class="nav-item mx-auto my-1">
+          <a class="nav-link text-white" href="#Train_route">Train Route</a>
+        </li>
+      </ul>
+      <!-- Links -->
+
+    </div>
+    <!-- Collapsible content -->
+  </nav>
+  <!--/.Navbar-->
+
+
+  <div class="jumboIn text-center mx-auto m-5 py-5" id="jumboIn">
+    <h1>Welcome To <span style="color: rgba(189, 27, 27, 0.822);">Travellers</span></h1><br>
+    <h3>Your journey, our responsibility.</h3>
+
+  </div>
+  <section>
+    <h1 class="my-5 text-center p-2" style="background-color: rgb(255, 255, 255,0.6);">Our Services</h1>
+    <hr class="w-75 mx-auto mb-5">
+    <div class="container" style="max-width:1000px">
+      <div class="row">
+        <div class="col-md-6 col-sm-12 mb-5">
+          <a href="#" class="text-dark" data-toggle="modal" data-target="#LiveTrainModal">
+            <div class="card" id="Train_status">
+              <div class="card-body  text-center">
+                <i class="fas fa-map-marker-alt fa-5x py-4 text-dark"></i>
+                <h3>Live Train Status</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-6 col-sm-12 mb-5">
+          <a href="#" class="text-dark" data-toggle="modal" data-target="#StationModal">
+            <div class="card" id="Station_status">
+              <div class="card-body  text-center">
+                <i class="fas fa-hotel fa-5x py-4 text-dark"></i>
+                <h3>Live Station Status</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-6 col-sm-12 mb-5">
+          <a href="#" class="text-dark" data-toggle="modal" data-target="#AllTrainModal">
+            <div class="card" id="PNR_status">
+              <div class="card-body  text-center">
+                <i class="fas fa-train fa-5x py-4 text-dark"></i>
+                <h3>All Trains on Station</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-6 col-sm-12 mb-5">
+          <a href="#" class="text-dark" data-toggle="modal" data-target="#TrainRouteModal">
+            <div class="card" id="Train_route">
+              <div class="card-body  text-center">
+                <i class="fas fa-route fa-5x py-4 text-dark"></i>
+                <h3>Train Route</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Modal live Train Status -->
+  <div class="modal fade" id="LiveTrainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Live Train Status</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>Enter Train Number:</label>
+          <input id="train_no" type="number" name="" class="form-control form-control-lg">
+          <label class="mt-3">Enter Date:</label>
+          <input id="journey_date" type="date" class="form-control form-control-lg">
+          <button class="btn btn-dark btn-lg mt-3" id="live_status_btn">Fetch Live Status</button>
+
+          <div id="current_status" class="mt-5 modal-body1"></div>
+          <div id="status_table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- The Modal Station Status -->
+  <div class="modal fade" id="StationModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Live Station Status (trains within 4 hrs)</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <label class="mt-3">Enter Station Code:</label>
+          <input id="station_code" type=text class="form-control form-control-lg" autocomplete="off">
+          <button class="btn btn-dark btn-lg my-3" id="station_status_btn">Fetch Station Status</button>
+
+          <div id="station_table" class="modal-body1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- The All Trains-->
+  <div class="modal fade" id="AllTrainModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">All Trains on Station</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <label class="mt-3">Enter Station Code:</label>
+          <input id="all_train_station_code" type=text class="form-control form-control-lg" autocomplete="off">
+          <button class="btn btn-dark btn-lg my-3" id="All_trains_btn">Fetch All Trains</button>
+          <div id="All_trains_table" class="modal-body1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- The Modal Train Route-->
+  <div class="modal fade" id="TrainRouteModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Train Route</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <label class="mt-3">Enter Train number:</label>
+          <input id="train_number_route" type=text class="form-control form-control-lg" autocomplete="off">
+          <button class="btn btn-dark btn-lg my-3" id="train_route_btn">Fetch Train Route</button>
+          <div id="route_table" class="modal-body1"></div>
+
+          <div id="route_table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="page-footer pt-3">
+    <!-- Copyright -->
+    <div class=" text-center py-2 text-white" style="font-size: 18px;background-color: rgba(92, 88, 88, 0.5);">Made with
+      <i class="fas fa-heart" style="color:red;"></i> by
+      <a href="https://jaya678.github.io/portfolio.github.io/"
+        style="text-decoration: none; font-weight: 600; color: rgb(5, 0, 0);"> RAJ SHUBHAM</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>
